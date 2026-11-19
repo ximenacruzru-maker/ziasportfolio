@@ -330,9 +330,8 @@
           annualPremium: 4615,
           invoiceNumber: "\u2014",
           amountDueNow: 0,
-          paymentStatus: "ACTION NEEDED",
-          critical: true,
-          notes: "AUTOPAY FORM NEEDED \u2014 sign autopay form for next payment to draft. Policy number and premium updated from the carrier's WC info page.",
+          paymentStatus: "CURRENT",
+          notes: "Current \u2014 the autopay form was taken care of (confirmed by the agency 11/19/2026). Policy number and premium updated from the carrier's WC info page.",
           finance: null
         }
       ]
@@ -1307,7 +1306,23 @@
     });
     return [buckets.usg, buckets.farmers];
   })();
-  const OVERRIDES_KEY = "policy_overrides_v1";
+  // v2: each saved edit records the policy data it was made against (_base).
+  // When the policy data in this file is updated later, that stale edit is dropped,
+  // so a browser's old edit can't hide a newer update. v1 edits (no _base) are not read.
+  const OVERRIDES_KEY = "policy_overrides_v2";
+  const findPolicy = (id) => {
+    for (const l of LOCATIONS) for (const p of l.policies) if (p.id === id) return p;
+    return null;
+  };
+  const baseOf = (p) => ({ paymentStatus: p.paymentStatus, notes: p.notes });
+  function dropStaleOverrides(all) {
+    const out = {};
+    Object.entries(all || {}).forEach(([id, ov]) => {
+      const p = findPolicy(id);
+      if (p && ov && ov._base && ov._base.paymentStatus === p.paymentStatus && ov._base.notes === p.notes) out[id] = ov;
+    });
+    return out;
+  }
   const DISMISSED_KEY = "dismissed_alerts_v1";
   function useOverrides() {
     const [overrides, setOverrides] = useState({});
@@ -1316,7 +1331,7 @@
       (async () => {
         try {
           const res = await window.storage.get(OVERRIDES_KEY, false);
-          if (res && res.value) setOverrides(JSON.parse(res.value));
+          if (res && res.value) setOverrides(dropStaleOverrides(JSON.parse(res.value)));
         } catch (e) {
         }
         setLoaded(true);
@@ -1324,7 +1339,8 @@
     }, []);
     const save = useCallback(async (policyId, patch) => {
       setOverrides((prev) => {
-        const next = { ...prev, [policyId]: { ...prev[policyId] || {}, ...patch } };
+        const p = findPolicy(policyId);
+        const next = { ...prev, [policyId]: { ...prev[policyId] || {}, ...patch, _base: p ? baseOf(p) : null } };
         window.storage.set(OVERRIDES_KEY, JSON.stringify(next), false).catch(() => {
         });
         return next;
@@ -1800,7 +1816,6 @@
   // Plain-language versions of the alerts. Anything not listed falls back to the original wording.
   const PLAIN_ALERTS = {
     "loc-star4": "Business insurance ended on 07/09/2026 and no renewal is on file. Check with Joe Lopez (USG) that it was renewed.",
-    "act-xpress5-wc": "Workers comp: please sign the autopay form so the next payment can go through. Ximena Cruz (Farmers) can help."
   };
 
   function Swatch({ color }) {
