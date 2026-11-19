@@ -6,9 +6,65 @@
 <title>Policy Manager</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; height: 100%; background: #f4f5f7; }
+  html, body { margin: 0; padding: 0; height: 100%; background: #172a66; }
+  .zd { font-family: 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #f2f5ff; }
+  .zd-bg { min-height: 100vh; background: linear-gradient(135deg, #15255e 0%, #1b3174 50%, #1c4370 100%); background-attachment: fixed; }
+  .zd-wrap { max-width: 1440px; margin: 0 auto; padding: 26px 22px 90px; }
+  .zd-eyebrow { font-size: 12px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: #8fd3ff; }
+  .zd-h1 { font-size: clamp(28px, 4vw, 38px); font-weight: 900; margin: 4px 0 2px; letter-spacing: -0.01em; line-height: 1.1; }
+  .zd-subtitle { font-size: clamp(14px, 1.6vw, 18px); font-weight: 800; color: #dfe6fb; }
+  .zd-sub { font-size: 12px; font-weight: 600; color: #b3c0e4; line-height: 1.45; }
+  .zd-h2 { font-size: 20px; font-weight: 900; margin: 0; }
+  .zd-h2-sub { font-size: 13px; font-weight: 700; color: #b3c0e4; }
+  .zd-card { background: rgba(255,255,255,0.075); border: 1px solid rgba(255,255,255,0.16); border-radius: 14px; box-shadow: 0 6px 24px rgba(6,12,40,0.18); }
+  .zd-label { font-size: 11px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: #d2dbf5; }
+  .zd-value { font-size: 28px; font-weight: 900; line-height: 1.15; margin: 4px 0 4px; font-variant-numeric: tabular-nums; }
+  .zd-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .zd-panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; align-items: start; }
+  @media (min-width: 1200px) { .zd-panels { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.8fr) minmax(0, 1.25fr); } }
+  .zd-split { grid-column: span 2; }
+  .zd-locs { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .zd-btn { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 13px; font-weight: 900; color: #fff; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 8px 15px; cursor: pointer; white-space: nowrap; }
+  .zd-btn:hover { background: rgba(255,255,255,0.2); }
+  .zd-btn-solid { background: #fff; color: #15255e; border-color: #fff; }
+  .zd-btn-solid:hover { background: #e3e9fb; }
+  .zd-row { display: block; width: 100%; font: inherit; color: inherit; background: transparent; border: none; border-radius: 9px; cursor: pointer; text-align: left; }
+  .zd-row:hover, .zd-row:focus-visible { background: rgba(255,255,255,0.08); outline: none; }
+  .zd-barrow { display: grid; grid-template-columns: minmax(120px, 0.9fr) 1.6fr; gap: 12px; align-items: center; padding: 7px 8px; }
+  .zd-tab { font: inherit; font-size: 12.5px; font-weight: 900; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+  .zd-tab.is-active { background: #fff; color: #15255e; border-color: #fff; }
+  .zd-table { width: 100%; border-collapse: collapse; min-width: 420px; }
+  .zd-th { font-size: 10.5px; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: #c3cdea; padding: 7px 6px; border-bottom: 1px solid rgba(255,255,255,0.18); white-space: nowrap; }
+  .zd-td { font-size: 13px; padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.08); font-variant-numeric: tabular-nums; }
+  .zd-trow { cursor: pointer; }
+  .zd-trow:hover { background: rgba(255,255,255,0.07); }
+  .zd-total .zd-td { border-bottom: none; background: rgba(255,255,255,0.08); }
+  .zd-chip { display: inline-block; font-size: 11px; font-weight: 900; padding: 1px 7px; border-radius: 999px; border: 1.5px solid; background: rgba(255,255,255,0.08); }
+  .zd-alert { display: flex; gap: 9px; align-items: flex-start; padding: 10px 13px; border-radius: 12px; background: rgba(208,59,59,0.22); border: 1px solid rgba(255,140,130,0.45); color: #ffe3e0; font-size: 13.5px; font-weight: 700; line-height: 1.45; }
+  .zd-input { width: 100%; font: inherit; font-size: 13px; font-weight: 700; color: #fff; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.28); border-radius: 999px; padding: 9px 14px 9px 32px; }
+  .zd-input::placeholder { color: #aebbe0; }
+  .zd-loc { padding: 16px; display: flex; flex-direction: column; transition: transform .15s, background .15s; }
+  .zd-loc:hover { background: rgba(255,255,255,0.11); transform: translateY(-1px); }
+  .zd-loc.is-critical { border-color: rgba(255,140,130,0.6); }
+  .zd-loc-main { font: inherit; color: inherit; background: none; border: none; padding: 0; text-align: left; cursor: pointer; display: block; width: 100%; }
+  .zd-docbtn { display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 11.5px; font-weight: 900; color: #15255e; background: #dfe6fb; border: none; border-radius: 999px; padding: 5px 10px; cursor: pointer; }
+  .zd-docbtn:hover { background: #fff; }
+  .zd-detail { background: #f4f5f7; color: #1c2027; border-radius: 16px; padding: 20px 20px 28px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+  .zd button:focus-visible, .zd input:focus-visible { outline: 2px solid #8fd3ff; outline-offset: 2px; }
+  @media (max-width: 520px) {
+    .zd-wrap { padding: 18px 16px 90px; }
+    .zd-barrow { grid-template-columns: 1fr; gap: 4px; }
+    .zd-panels { grid-template-columns: 1fr; }
+    .zd-detail { padding: 14px 12px 22px; }
+    .zd-kpis { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .zd-kpis .zd-card { padding: 12px !important; }
+    .zd-kpis .zd-value { font-size: 20px; }
+  }
   #root { min-height: 100vh; }
   button { font-family: inherit; }
 </style>
@@ -1723,207 +1779,937 @@
       },
       /* @__PURE__ */ React.createElement(ChevronLeft, { size: 15 }),
       " All locations"
-    ), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginBottom: 4 } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: 21, fontWeight: 800, color: "#12203a", margin: 0 } }, location.name), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 5, color: "#6b7280", fontSize: 12.5, marginTop: 4 } }, /* @__PURE__ */ React.createElement(MapPin, { size: 13 }), " ", location.address)), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14 } }, decPolicy && /* @__PURE__ */ React.createElement(DownloadDecButton, { policyId: decPolicy.id, label: `${kindLabel(decPolicy.kind)} dec sheet` }), binderPolicy && /* @__PURE__ */ React.createElement(DownloadBinderButton, { policyId: binderPolicy.id, label: `${kindLabel(binderPolicy.kind)} binder` }), wcInfoPolicy && /* @__PURE__ */ React.createElement(DownloadWcInfoButton, { policyId: wcInfoPolicy.id }), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "right" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, letterSpacing: "0.06em", color: "#9296a0", textTransform: "uppercase" } }, "Combined annual premium"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 19, fontWeight: 800, color: "#12203a" } }, money(totalPremium))))), /* @__PURE__ */ React.createElement(CoverageBreakdown, { location }), location.alert && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 9, alignItems: "flex-start", background: "#fdeceb", border: "1px solid #f6c9c5", borderRadius: 10, padding: "10px 13px", marginTop: 14, marginBottom: 6 } }, /* @__PURE__ */ React.createElement(AlertTriangle, { size: 16, color: "#a3271b", style: { flexShrink: 0, marginTop: 1 } }), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12.5, color: "#7a2016", lineHeight: 1.5 } }, location.alert)), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gap: 14, marginTop: 18, gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" } }, location.policies.map((p) => /* @__PURE__ */ React.createElement(PolicyBlock, { key: p.id, policy: p, overrides, onSave }))), /* @__PURE__ */ React.createElement(LocationCoiSection, { location }));
+    ), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginBottom: 4 } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: 21, fontWeight: 800, color: "#12203a", margin: 0 } }, location.name), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 5, color: "#6b7280", fontSize: 12.5, marginTop: 4 } }, /* @__PURE__ */ React.createElement(MapPin, { size: 13 }), " ", location.address)), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14 } }, decPolicy && /* @__PURE__ */ React.createElement(DownloadDecButton, { policyId: decPolicy.id, label: `${kindLabel(decPolicy.kind)} dec sheet` }), binderPolicy && /* @__PURE__ */ React.createElement(DownloadBinderButton, { policyId: binderPolicy.id, label: `${kindLabel(binderPolicy.kind)} binder` }), wcInfoPolicy && /* @__PURE__ */ React.createElement(DownloadWcInfoButton, { policyId: wcInfoPolicy.id }), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "right" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, letterSpacing: "0.06em", color: "#9296a0", textTransform: "uppercase" } }, "Combined annual premium"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 19, fontWeight: 800, color: "#12203a" } }, money(totalPremium)), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: "#4a4f59", marginTop: 2 } }, "BOP ", moneyOrDash(premiumSplit(location).bop), " \xB7 Workers comp ", moneyOrDash(premiumSplit(location).wc))))), /* @__PURE__ */ React.createElement(CoverageBreakdown, { location }), location.alert && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 9, alignItems: "flex-start", background: "#fdeceb", border: "1px solid #f6c9c5", borderRadius: 10, padding: "10px 13px", marginTop: 14, marginBottom: 6 } }, /* @__PURE__ */ React.createElement(AlertTriangle, { size: 16, color: "#a3271b", style: { flexShrink: 0, marginTop: 1 } }), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12.5, color: "#7a2016", lineHeight: 1.5 } }, location.alert)), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gap: 14, marginTop: 18, gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" } }, location.policies.map((p) => /* @__PURE__ */ React.createElement(PolicyBlock, { key: p.id, policy: p, overrides, onSave }))), /* @__PURE__ */ React.createElement(LocationCoiSection, { location }));
   }
-  function LocationCard({ location, overrides, onOpen }) {
-    const totalPremium = location.policies.reduce((s, p) => s + (p.annualPremium || 0), 0);
-    const nearestExpiry = location.policies.map((p) => daysUntil(p.expiration)).filter((d) => d !== null).sort((a, b) => a - b)[0];
-    const hasCritical = location.alert || location.policies.some((p) => {
-      const ov = overrides[p.id];
-      return (ov ? ov.paymentStatus : p.paymentStatus)?.match(/PENDING|EXPIRED|ACTION/i);
+  // ---------- Premium split: BOP (GL / Property / Package) vs Workers Comp ----------
+  const h = React.createElement;
+  const isWC = (p) => /workers/i.test(p.kind);
+  function premiumSplit(location) {
+    let bop = 0;
+    let wc = 0;
+    location.policies.forEach((p) => {
+      if (isWC(p)) wc += p.annualPremium || 0;
+      else bop += p.annualPremium || 0;
     });
-    const decPolicy = location.policies.find((p) => DEC_FILES[p.id]);
-    const binderPolicy = location.policies.find((p) => BINDER_FILES[p.id]);
-    const wcInfoPolicy = location.policies.find((p) => WC_INFO_FILES[p.id]);
-    return /* @__PURE__ */ React.createElement(
-      "div",
-      {
-        style: {
-          textAlign: "left",
-          border: hasCritical ? "1px solid #f2b8b2" : "1px solid #e6e8ec",
-          borderRadius: 12,
-          padding: "16px 16px 14px",
-          background: "#fff",
-          display: "flex",
-          flexDirection: "column",
-          gap: 10,
-          transition: "box-shadow .15s, transform .15s",
-          boxShadow: "0 1px 2px rgba(20,24,33,0.04)"
-        },
-        onMouseEnter: (e) => {
-          e.currentTarget.style.boxShadow = "0 6px 20px rgba(20,24,33,0.08)";
-          e.currentTarget.style.transform = "translateY(-1px)";
-        },
-        onMouseLeave: (e) => {
-          e.currentTarget.style.boxShadow = "0 1px 2px rgba(20,24,33,0.04)";
-          e.currentTarget.style.transform = "none";
+    return { bop, wc, total: bop + wc };
+  }
+  const SORTED_LOCATIONS = [...LOCATIONS].sort((a, b) => naturalCompare(a.name, b.name));
+  const PREMIUM_ROWS = SORTED_LOCATIONS.map((loc) => ({ id: loc.id, name: loc.name, ...premiumSplit(loc) }));
+  const PREMIUM_TOTALS = PREMIUM_ROWS.reduce(
+    (t, r) => ({ bop: t.bop + r.bop, wc: t.wc + r.wc, total: t.total + r.total }),
+    { bop: 0, wc: 0, total: 0 }
+  );
+  const moneyOrDash = (v) => (v ? money(v) : "—");
+
+  // ---------- Portfolio assistant: built-in answers (no setup) ----------
+  const LOCATION_PATTERNS = {
+    star9: /\bstar\s*(?:gas\s*(?:&|and)?\s*mart\s*)?(?:#|no\.?\s*|number\s*)?9\b/,
+    star10: /\bstar\s*(?:gas\s*(?:&|and)?\s*mart\s*)?(?:#|no\.?\s*|number\s*)?10\b/,
+    star3: /\bstar\s*(?:gas\s*(?:&|and)?\s*mart\s*)?(?:#|no\.?\s*|number\s*)?3\b/,
+    star4: /\bstar\s*(?:gas\s*(?:&|and)?\s*mart\s*)?(?:#|no\.?\s*|number\s*)?4\b/,
+    xpress5: /\b(?:x\s*press|express)\s*(?:gas\s*(?:&|and)?\s*mart\s*)?(?:#|no\.?\s*|number\s*)?5\b/,
+    xpress3: /\b(?:x\s*press|express)\s*(?:gas\s*(?:&|and)?\s*mart\s*)?(?:#|no\.?\s*|number\s*)?3\b/,
+    xpress: /\b(?:x\s*press|express)\b(?!\s*(?:gas\s*(?:&|and)?\s*mart\s*)?(?:#|no\.?\s*|number\s*)?\d)|redmond/,
+    azstar: /\baz\s*star\b|\barizona star\b|fremont|grimmer/,
+    golden: /\bgolden\b|oakdale/
+  };
+  const CITY_PATTERNS = [
+    [/santa rosa/, ["star9"]],
+    [/stockton/, ["star10", "xpress3"]],
+    [/antioch/, ["star3"]],
+    [/san jose/, ["star4", "xpress"]],
+    [/santa clara/, ["xpress5"]]
+  ];
+  function matchLocations(q) {
+    const ids = new Set();
+    Object.entries(LOCATION_PATTERNS).forEach(([id, re]) => {
+      if (re.test(q)) ids.add(id);
+    });
+    CITY_PATTERNS.forEach(([re, list]) => {
+      if (re.test(q)) list.forEach((id) => ids.add(id));
+    });
+    return SORTED_LOCATIONS.filter((l) => ids.has(l.id));
+  }
+  const kindShort = (p) => (isWC(p) ? "Workers comp" : p.kind.replace("Property / BOP", "BOP (GL/Property)"));
+  const statusOf = (p, overrides) => (overrides[p.id] && overrides[p.id].paymentStatus) || p.paymentStatus;
+  function renewText(date) {
+    const d = daysUntil(date);
+    if (d === null) return date;
+    if (d < 0) return `${date} (expired ${Math.abs(d)}d ago)`;
+    return `${date} (${d}d)`;
+  }
+
+  function localAnswer(question, overrides) {
+    const q = question.toLowerCase();
+    const locs = matchLocations(q);
+    const scope = locs.length ? locs : SORTED_LOCATIONS;
+    const scopeName = locs.length === 1 ? locs[0].name : locs.length ? "those locations" : "the portfolio";
+    const wantsWC = /workers|\bcomp\b|\bwc\b|farmers/.test(q);
+    const wantsBOP = /\bbop\b|property|liability|\bgl\b|usg|penn|package|century/.test(q);
+    const has = (re) => re.test(q);
+
+    if (has(/claim|loss run|loss-run|lossrun|injur|accident/)) {
+      const rows = scope.flatMap((l) => l.policies.filter(isWC).map((p) => [l.name, p.policyNumber, String(WC_LOSS_RUNS.claims[p.id] ?? "—")]));
+      const total = scope.flatMap((l) => l.policies.filter(isWC)).reduce((n, p) => n + (WC_LOSS_RUNS.claims[p.id] || 0), 0);
+      return {
+        text: `Workers comp claims for ${scopeName}: ${total}. The Farmers loss runs (valued ${WC_LOSS_RUNS.valuationDate}, covering 01/01/2021 – 11/19/2026) show $0 paid, $0 reserved and $0 incurred on every policy. Use the "Workers Comp Loss Runs" button at the top to download the reports. (Loss runs for the BOP/GL policies aren't on file.)`,
+        table: { head: ["Location", "WC policy #", "Claims"], rows }
+      };
+    }
+    if (has(/renew|expir|due date|coming up|lapse/)) {
+      const list = scope
+        .flatMap((l) => l.policies.filter((p) => (wantsWC && !wantsBOP ? isWC(p) : wantsBOP && !wantsWC ? !isWC(p) : true)).map((p) => ({ l, p, d: daysUntil(p.expiration) })))
+        .sort((a, b) => a.d - b.d);
+      const next = list.find((x) => x.d >= 0);
+      return {
+        text: next ? `Next up: ${next.l.name} — ${kindShort(next.p)} renews ${renewText(next.p.expiration)}.` : "No upcoming renewals found.",
+        table: { head: ["Location", "Policy", "Renews"], rows: list.map((x) => [x.l.name, `${kindShort(x.p)} · ${x.p.policyNumber}`, renewText(x.p.expiration)]) }
+      };
+    }
+    if (has(/alert|action|cancel|problem|issue|urgent|attention|wrong|worr/)) {
+      const rows = [];
+      scope.forEach((l) => {
+        if (l.alert) rows.push([l.name, l.alert]);
+        l.policies.forEach((p) => {
+          const s = statusOf(p, overrides);
+          if (/PENDING|EXPIRED|ACTION/i.test(s) && !(l.alert && /PENDING|EXPIRED/i.test(s))) rows.push([l.name, `${kindShort(p)} (${p.policyNumber}): ${s} — ${p.notes}`]);
+        });
+      });
+      return rows.length
+        ? { text: `${rows.length} item${rows.length === 1 ? "" : "s"} need attention:`, table: { head: ["Location", "Issue"], rows } }
+        : { text: `Nothing flagged for ${scopeName}.` };
+    }
+    if (has(/policy (number|#|no)|policy numbers|policy #/)) {
+      return {
+        text: `Policy numbers for ${scopeName}:`,
+        table: { head: ["Location", "Type", "Policy #", "Carrier"], rows: scope.flatMap((l) => l.policies.map((p) => [l.name, kindShort(p), p.policyNumber, p.carrier])) }
+      };
+    }
+    if (has(/\bpaid\b|autopay|financ|\bowe\b|balance|payment|past due|behind/)) {
+      return {
+        text: `Payment status for ${scopeName}:`,
+        table: { head: ["Location", "Policy", "Status"], rows: scope.flatMap((l) => l.policies.map((p) => [l.name, `${kindShort(p)} · ${p.policyNumber}`, statusOf(p, overrides)])) }
+      };
+    }
+    if (locs.length) {
+      const parts = locs.map((l) => {
+        const s = premiumSplit(l);
+        const wcPol = l.policies.find(isWC);
+        let line;
+        if (wantsWC && !wantsBOP) {
+          line = wcPol ? `${l.name}: workers comp is ${money(wcPol.annualPremium)}/yr (Farmers ${wcPol.policyNumber}, renews ${renewText(wcPol.expiration)}, ${WC_LOSS_RUNS.claims[wcPol.id] || 0} claims).` : `${l.name} has no workers comp policy on file.`;
+        } else if (wantsBOP && !wantsWC) {
+          line = s.bop ? `${l.name}: BOP (GL/property) is ${money(s.bop)}/yr.` : `${l.name} has no BOP / GL / property policy on file.`;
+        } else {
+          line = `${l.name} costs ${money(s.total)}/yr — BOP ${moneyOrDash(s.bop)} + workers comp ${moneyOrDash(s.wc)}.`;
         }
-      },
-      /* @__PURE__ */ React.createElement(
-        "button",
-        {
-          onClick: onOpen,
-          style: { background: "none", border: "none", padding: 0, margin: 0, textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column", gap: 10 }
-        },
-        /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 9 } }, /* @__PURE__ */ React.createElement("div", { style: { width: 34, height: 34, borderRadius: 9, background: "#eef1f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, /* @__PURE__ */ React.createElement(Building2, { size: 16, color: "#12203a" })), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, fontSize: 14.5, color: "#12203a", lineHeight: 1.25 } }, location.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11.5, color: "#8a8f99", marginTop: 2 } }, location.address))), hasCritical && /* @__PURE__ */ React.createElement(AlertTriangle, { size: 16, color: "#e5453a", style: { flexShrink: 0, marginTop: 2 } })),
-        /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 7, flexWrap: "wrap" } }, location.policies.map((p) => /* @__PURE__ */ React.createElement(CoveragePill, { key: p.id, policy: p, overrides }))),
-        /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "auto", paddingTop: 4, borderTop: "1px solid #f1f2f4" } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 9.5, letterSpacing: "0.06em", color: "#9296a0", textTransform: "uppercase" } }, "Annual premium"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14.5, fontWeight: 700, color: "#12203a" } }, money(totalPremium))), nearestExpiry !== null && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "right" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 9.5, letterSpacing: "0.06em", color: "#9296a0", textTransform: "uppercase" } }, "Next renewal"), /* @__PURE__ */ React.createElement(ExpiryBadge, { date: location.policies.sort((a, b) => daysUntil(a.expiration) - daysUntil(b.expiration))[0].expiration })))
-      ),
-      decPolicy && /* @__PURE__ */ React.createElement(
-        "button",
-        {
-          onClick: () => downloadDecFile(decPolicy.id),
-          title: "Download dec sheet PDF",
-          style: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
-            fontSize: 11.5,
-            fontWeight: 700,
-            color: BUTTON_FG,
-            background: BUTTON_BG,
-            border: "none",
-            borderRadius: 7,
-            padding: "6px 10px",
-            cursor: "pointer"
-          }
-        },
-        /* @__PURE__ */ React.createElement(Download, { size: 12 }),
-        " Download ",
-        kindLabel(decPolicy.kind),
-        " dec sheet"
-      ),
-      binderPolicy && /* @__PURE__ */ React.createElement(
-        "button",
-        {
-          onClick: () => downloadBinderFile(binderPolicy.id),
-          title: "Download binder PDF",
-          style: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
-            fontSize: 11.5,
-            fontWeight: 700,
-            color: BUTTON_FG,
-            background: BUTTON_BG,
-            border: "none",
-            borderRadius: 7,
-            padding: "6px 10px",
-            cursor: "pointer"
-          }
-        },
-        /* @__PURE__ */ React.createElement(Download, { size: 12 }),
-        " Download ",
-        kindLabel(binderPolicy.kind),
-        " binder"
-      ),
-      wcInfoPolicy && /* @__PURE__ */ React.createElement(
-        "button",
-        {
-          onClick: () => downloadWcInfoFile(wcInfoPolicy.id),
-          title: "Download WC info page PDF",
-          style: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
-            fontSize: 11.5,
-            fontWeight: 700,
-            color: BUTTON_FG,
-            background: BUTTON_BG,
-            border: "none",
-            borderRadius: 7,
-            padding: "6px 10px",
-            cursor: "pointer"
-          }
-        },
-        /* @__PURE__ */ React.createElement(Download, { size: 12 }),
-        " Download WC info"
+        return line + (l.alert ? `\n⚠ ${l.alert}` : "");
+      });
+      return {
+        text: parts.join("\n\n"),
+        table: {
+          head: ["Location", "Policy", "Premium", "Renews", "Status"],
+          rows: locs.flatMap((l) => l.policies.filter((p) => (wantsWC && !wantsBOP ? isWC(p) : wantsBOP && !wantsWC ? !isWC(p) : true)).map((p) => [l.name, `${kindShort(p)} · ${p.policyNumber}`, money(p.annualPremium), renewText(p.expiration), statusOf(p, overrides)]))
+        }
+      };
+    }
+    if (has(/most|highest|biggest|expensive|largest|least|lowest|cheapest|smallest/)) {
+      const key = wantsWC && !wantsBOP ? "wc" : wantsBOP && !wantsWC ? "bop" : "total";
+      const label = key === "wc" ? "workers comp" : key === "bop" ? "BOP" : "total premium";
+      const desc = !has(/least|lowest|cheapest|smallest/);
+      const rows = PREMIUM_ROWS.filter((r) => r[key] > 0).sort((a, b) => (desc ? b[key] - a[key] : a[key] - b[key]));
+      return {
+        text: `${desc ? "Highest" : "Lowest"} ${label}: ${rows[0].name} at ${money(rows[0][key])}/yr.`,
+        table: { head: ["Location", label], rows: rows.map((r) => [r.name, money(r[key])]) }
+      };
+    }
+    if (wantsWC && !wantsBOP) {
+      return {
+        text: `Workers comp totals ${money(PREMIUM_TOTALS.wc)}/yr across ${PREMIUM_ROWS.filter((r) => r.wc).length} locations (all Farmers / Mid-Century). 0 claims on the latest loss runs.`,
+        table: { head: ["Location", "Workers comp"], rows: [...PREMIUM_ROWS.map((r) => [r.name, moneyOrDash(r.wc)]), ["Total", money(PREMIUM_TOTALS.wc)]] }
+      };
+    }
+    if (wantsBOP && !wantsWC) {
+      return {
+        text: `BOP (GL / property / package) totals ${money(PREMIUM_TOTALS.bop)}/yr across ${PREMIUM_ROWS.filter((r) => r.bop).length} locations (USG — Penn-Star / Century Surety).`,
+        table: { head: ["Location", "BOP"], rows: [...PREMIUM_ROWS.map((r) => [r.name, moneyOrDash(r.bop)]), ["Total", money(PREMIUM_TOTALS.bop)]] }
+      };
+    }
+    if (has(/how many/)) {
+      const n = LOCATIONS.reduce((s, l) => s + l.policies.length, 0);
+      const wc = LOCATIONS.reduce((s, l) => s + l.policies.filter(isWC).length, 0);
+      return { text: `${LOCATIONS.length} locations, ${n} policies: ${wc} workers comp and ${n - wc} BOP / GL / property.` };
+    }
+    if (has(/spend|spending|cost|paying|premium|how much|total|price|breakdown|each|per location|every|all location|summary|overview/)) {
+      return {
+        text: `Total annual premium is ${money(PREMIUM_TOTALS.total)}: BOP ${money(PREMIUM_TOTALS.bop)} + workers comp ${money(PREMIUM_TOTALS.wc)}. By location:`,
+        table: { head: ["Location", "BOP", "Workers comp", "Total"], rows: [...PREMIUM_ROWS.map((r) => [r.name, moneyOrDash(r.bop), moneyOrDash(r.wc), money(r.total)]), ["All locations", money(PREMIUM_TOTALS.bop), money(PREMIUM_TOTALS.wc), money(PREMIUM_TOTALS.total)]] }
+      };
+    }
+    return {
+      text: "I can answer questions about premiums (per location, BOP vs workers comp), renewals, payment status, policy numbers, alerts and workers comp claims. Try one of the suggestions below, or name a location like \"Star 9\" or \"Xpress 5\".\n\nFor any other question, turn on Claude AI answers with the ⚙ button above."
+    };
+  }
+
+  // ---------- Portfolio assistant: Claude AI answers (optional, needs an API key) ----------
+  const AI_KEY_STORAGE = "portfolio_ai_api_key_v1";
+  const AI_MODEL = "claude-opus-5-5";
+  const ANTHROPIC_SDK_URL = "https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@1.4.0/+esm";
+  let anthropicSdkPromise = null;
+  function loadAnthropicSdk() {
+    if (!anthropicSdkPromise) {
+      anthropicSdkPromise = import(ANTHROPIC_SDK_URL).catch((e) => {
+        anthropicSdkPromise = null;
+        throw e;
+      });
+    }
+    return anthropicSdkPromise;
+  }
+  const readKey = () => {
+    try {
+      return window.localStorage.getItem(AI_KEY_STORAGE) || "";
+    } catch (e) {
+      return "";
+    }
+  };
+  const writeKey = (v) => {
+    try {
+      if (v) window.localStorage.setItem(AI_KEY_STORAGE, v);
+      else window.localStorage.removeItem(AI_KEY_STORAGE);
+    } catch (e) {
+    }
+  };
+  function buildSystemPrompt(overrides) {
+    const now = new Date();
+    const data = {
+      agency: AGENCY.name,
+      producers: AGENCY.producers,
+      totals: { annualPremium: PREMIUM_TOTALS.total, bop: PREMIUM_TOTALS.bop, workersComp: PREMIUM_TOTALS.wc, locations: LOCATIONS.length, policies: LOCATIONS.reduce((s, l) => s + l.policies.length, 0) },
+      carrierTotals: CARRIER_TOTALS,
+      workersCompLossRuns: { source: "Farmers Claim Summary Reports", valuationDate: WC_LOSS_RUNS.valuationDate, dateRange: "01/01/2021 - 11/19/2026", claimCountsByPolicyId: WC_LOSS_RUNS.claims, note: "Every WC policy shows 0 claims, $0 paid, $0 reserves, $0 incurred. No loss runs on file for the BOP/GL/property policies." },
+      locations: SORTED_LOCATIONS.map((l) => ({
+        name: l.name,
+        address: l.address,
+        alert: l.alert || null,
+        premium: premiumSplit(l),
+        policies: l.policies.map((p) => ({
+          id: p.id,
+          category: isWC(p) ? "Workers Comp" : "BOP (GL / Property / Package)",
+          kind: p.kind,
+          policyNumber: p.policyNumber,
+          carrier: p.carrier,
+          coverageType: p.coverageType,
+          effective: p.effective,
+          expiration: p.expiration,
+          daysUntilExpiration: daysUntil(p.expiration),
+          annualPremium: p.annualPremium,
+          paymentStatus: statusOf(p, overrides),
+          notes: (overrides[p.id] && overrides[p.id].notes) || p.notes,
+          finance: p.finance
+        }))
+      }))
+    };
+    return [
+      "You are the portfolio assistant inside an insurance policy dashboard. The person asking is Zia, the owner of the gas station and convenience store locations below, or someone at the insurance agency. Answer questions about this insurance portfolio using only the data below.",
+      "",
+      "Definitions: \"BOP\" means every policy that is not workers comp (general liability, property, package) — written through USG with Penn-Star or Century Surety. \"Workers comp\" means the Farmers (Mid-Century Insurance Company) policies. \"Spending\" or \"cost\" means annual premium.",
+      "",
+      "How to answer:",
+      "- Lead with the direct answer, then a short supporting list if it helps. Keep it brief.",
+      "- Double-check arithmetic. Show dollar amounts with cents, like $4,129.00.",
+      "- If the data doesn't answer the question (coverage limits, deductibles, quotes, anything not listed), say so plainly and say who to confirm with: USG / Joe Lopez for BOP, GL and property; Farmers / Ximena Cruz for workers comp. Never guess at numbers.",
+      "- Mention open alerts (pending cancellation, expired terms, action needed) when they are relevant to the question.",
+      "- Write plain text only: use \"- \" for bullets and line breaks between sections. No markdown tables, headings, bold or asterisks — they will not render.",
+      "",
+      `Today's date: ${now.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })}.`,
+      "",
+      "Portfolio data (JSON):",
+      JSON.stringify(data, null, 1)
+    ].join("\n");
+  }
+  // After a mid-output refusal fallback, thinking blocks before the last `fallback` block must not be echoed back.
+  function contentForHistory(content) {
+    const cut = content.map((b) => b.type).lastIndexOf("fallback");
+    if (cut < 0) return content;
+    return content.filter((b, i) => i >= cut || b.type === "text");
+  }
+  async function askClaude({ apiKey, history, overrides, onText }) {
+    const mod = await loadAnthropicSdk();
+    const Anthropic = mod.default || mod.Anthropic;
+    const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+    try {
+      const stream = client.beta.messages.stream({
+        model: AI_MODEL,
+        max_tokens: 64e3,
+        betas: ["server-side-fallback-2026-07-01"],
+        fallbacks: "default",
+        output_config: { effort: "low" },
+        cache_control: { type: "ephemeral" },
+        system: buildSystemPrompt(overrides),
+        messages: history
+      });
+      stream.on("text", (delta) => onText(delta));
+      const msg = await stream.finalMessage();
+      if (msg.stop_reason === "refusal") return { refused: true };
+      const text = msg.content.filter((b) => b.type === "text").map((b) => b.text).join("");
+      return { text, content: contentForHistory(msg.content), truncated: msg.stop_reason === "max_tokens" };
+    } catch (err) {
+      if (err instanceof Anthropic.AuthenticationError) throw new Error("Claude rejected the API key. Check it in settings (⚙).");
+      if (err instanceof Anthropic.PermissionDeniedError) throw new Error("This API key isn't allowed to use Claude. Check the key's workspace permissions.");
+      if (err instanceof Anthropic.RateLimitError) throw new Error("Claude is busy right now (rate limit). Try again in a minute.");
+      if (err instanceof Anthropic.APIConnectionError) throw new Error("Couldn't reach Claude. Check the internet connection.");
+      if (err instanceof Anthropic.APIError) throw new Error(`Claude returned an error (${err.status ?? "unknown"}): ${err.message}`);
+      throw err;
+    }
+  }
+
+  // ---------- Portfolio assistant UI ----------
+  const SUGGESTIONS = [
+    "How much am I spending on each location?",
+    "Workers comp vs BOP totals",
+    "What's the workers comp for Star 9?",
+    "Which location costs the most?",
+    "What renews next?",
+    "Any workers comp claims?",
+    "What needs my attention?"
+  ];
+  function ChatTable({ table }) {
+    const cell = { padding: "5px 8px", borderBottom: "1px solid #eceef1", fontSize: 12, textAlign: "left", verticalAlign: "top" };
+    return h(
+      "div",
+      { style: { overflowX: "auto", marginTop: 8, background: "#fff", border: "1px solid #e6e8ec", borderRadius: 8 } },
+      h(
+        "table",
+        { style: { borderCollapse: "collapse", width: "100%" } },
+        h("thead", null, h("tr", null, table.head.map((c, i) => h("th", { key: i, style: { ...cell, fontSize: 10.5, color: "#8a8f99", textTransform: "uppercase", letterSpacing: "0.04em", whiteSpace: "nowrap" } }, c)))),
+        h(
+          "tbody",
+          null,
+          table.rows.map((r, i) =>
+            h(
+              "tr",
+              { key: i },
+              r.map((c, j) => h("td", { key: j, style: { ...cell, whiteSpace: /^\$|^—$/.test(c) || j === 0 ? "nowrap" : "normal", fontWeight: /^(Total|All locations)$/.test(r[0]) ? 700 : 400 } }, c))
+            )
+          )
+        )
       )
     );
   }
+  function ChatBubble({ m }) {
+    const mine = m.role === "user";
+    return h(
+      "div",
+      { style: { display: "flex", justifyContent: mine ? "flex-end" : "flex-start" } },
+      h(
+        "div",
+        {
+          style: {
+            maxWidth: mine ? "85%" : "100%",
+            minWidth: 0,
+            background: mine ? "#12203a" : m.error ? "#fdeceb" : "#f4f5f7",
+            color: mine ? "#fff" : m.error ? "#7a2016" : "#1c2027",
+            borderRadius: 12,
+            padding: "9px 12px",
+            fontSize: 13,
+            lineHeight: 1.5,
+            whiteSpace: "pre-wrap",
+            overflowWrap: "anywhere"
+          }
+        },
+        m.text || (m.pending ? "Thinking…" : ""),
+        m.table && h(ChatTable, { table: m.table }),
+        !mine && m.source && h("div", { style: { fontSize: 10.5, color: "#9296a0", marginTop: 6 } }, m.source)
+      )
+    );
+  }
+  function PortfolioChat({ overrides, open, setOpen }) {
+    const [showSettings, setShowSettings] = useState(false);
+    const [apiKey, setApiKey] = useState(readKey);
+    const [keyDraft, setKeyDraft] = useState("");
+    const [input, setInput] = useState("");
+    const [busy, setBusy] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [history, setHistory] = useState([]);
+    const scrollRef = React.useRef(null);
+    useEffect(() => {
+      if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }, [messages, open]);
+    const aiOn = !!apiKey;
+    const send = async (raw) => {
+      const question = (raw ?? input).trim();
+      if (!question || busy) return;
+      setInput("");
+      setMessages((prev) => [...prev, { role: "user", text: question }]);
+      if (!aiOn) {
+        const ans = localAnswer(question, overrides);
+        setMessages((prev) => [...prev, { role: "assistant", ...ans, source: "Built-in answer from the dashboard data" }]);
+        return;
+      }
+      setBusy(true);
+      const nextHistory = [...history, { role: "user", content: question }];
+      setMessages((prev) => [...prev, { role: "assistant", text: "", pending: true }]);
+      const patchLast = (fn) => setMessages((prev) => [...prev.slice(0, -1), fn(prev[prev.length - 1])]);
+      try {
+        const res = await askClaude({ apiKey, history: nextHistory, overrides, onText: (d) => patchLast((m) => ({ ...m, text: m.text + d })) });
+        if (res.refused) {
+          patchLast(() => ({ role: "assistant", text: "Claude declined to answer that one. Try rephrasing the question.", error: true }));
+        } else {
+          setHistory([...nextHistory, { role: "assistant", content: res.content }]);
+          patchLast(() => ({ role: "assistant", text: res.text + (res.truncated ? "\n\n(Answer was cut off.)" : ""), source: "Answered by Claude AI" }));
+        }
+      } catch (e) {
+        const ans = localAnswer(question, overrides);
+        patchLast(() => ({ role: "assistant", ...ans, text: `${e && e.message ? e.message : "Claude is unavailable."}\n\nBuilt-in answer instead:\n${ans.text}`, source: "Built-in answer from the dashboard data" }));
+      } finally {
+        setBusy(false);
+      }
+    };
+    const saveKey = () => {
+      const v = keyDraft.trim();
+      writeKey(v);
+      setApiKey(v);
+      setKeyDraft("");
+      setShowSettings(false);
+    };
+    const removeKey = () => {
+      writeKey("");
+      setApiKey("");
+      setHistory([]);
+    };
+    const iconBtn = { background: "none", border: "none", color: "#fff", cursor: "pointer", padding: 4, fontSize: 16, lineHeight: 1 };
+    if (!open) {
+      return h(
+        "button",
+        {
+          onClick: () => setOpen(true),
+          style: { position: "fixed", right: 18, bottom: 18, zIndex: 50, display: "flex", alignItems: "center", gap: 8, background: "#12203a", color: "#fff", border: "none", borderRadius: 999, padding: "12px 18px", fontSize: 13.5, fontWeight: 700, cursor: "pointer", boxShadow: "0 8px 24px rgba(18,32,58,0.35)" }
+        },
+        h(Info, { size: 16 }),
+        " Ask about the portfolio"
+      );
+    }
+    return h(
+      "div",
+      {
+        role: "dialog",
+        "aria-label": "Portfolio assistant",
+        style: { position: "fixed", right: 16, bottom: 16, zIndex: 50, width: "min(420px, calc(100vw - 32px))", height: "min(620px, calc(100vh - 32px))", background: "#fff", borderRadius: 14, boxShadow: "0 18px 48px rgba(18,32,58,0.28)", display: "flex", flexDirection: "column", overflow: "hidden", border: "1px solid #e6e8ec" }
+      },
+      h(
+        "div",
+        { style: { background: "#12203a", color: "#fff", padding: "12px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 } },
+        h(
+          "div",
+          null,
+          h("div", { style: { fontSize: 14, fontWeight: 800 } }, "Portfolio assistant"),
+          h("div", { style: { fontSize: 11, opacity: 0.7 } }, aiOn ? "Claude AI answers — ask anything" : "Built-in answers · ⚙ to turn on Claude AI")
+        ),
+        h(
+          "div",
+          { style: { display: "flex", gap: 4 } },
+          h("button", { onClick: () => setShowSettings((s) => !s), title: "Settings", "aria-label": "Settings", style: iconBtn }, "⚙"),
+          h("button", { onClick: () => setOpen(false), title: "Close", "aria-label": "Close", style: iconBtn }, h(X, { size: 16 }))
+        )
+      ),
+      showSettings &&
+        h(
+          "div",
+          { style: { padding: "12px 14px", borderBottom: "1px solid #e6e8ec", background: "#f7f8fa", fontSize: 12, lineHeight: 1.5, color: "#3a3f47" } },
+          h("div", { style: { fontWeight: 700, marginBottom: 4, color: "#12203a" } }, "Claude AI answers"),
+          h(
+            "div",
+            { style: { marginBottom: 8 } },
+            "Without a key, the assistant answers common questions from the dashboard data. Add an Anthropic API key to ask anything. The key is saved only in this browser. With it on, the portfolio data on this page is sent to Anthropic with each question, and usage is billed to the key's account."
+          ),
+          aiOn
+            ? h(
+                "div",
+                { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 } },
+                h("span", null, "Key saved (••••", apiKey.slice(-4), ")"),
+                h("button", { onClick: removeKey, style: { fontSize: 12, fontWeight: 700, color: "#a3271b", background: "#fdeceb", border: "1px solid #f6c9c5", borderRadius: 7, padding: "5px 10px", cursor: "pointer" } }, "Remove key")
+              )
+            : h(
+                "div",
+                { style: { display: "flex", gap: 6 } },
+                h("input", {
+                  type: "password",
+                  value: keyDraft,
+                  onChange: (e) => setKeyDraft(e.target.value),
+                  onKeyDown: (e) => e.key === "Enter" && saveKey(),
+                  placeholder: "sk-ant-…",
+                  autoComplete: "off",
+                  style: { flex: 1, minWidth: 0, padding: "7px 10px", borderRadius: 7, border: "1px solid #d7dae0", fontSize: 12.5, fontFamily: "inherit" }
+                }),
+                h("button", { onClick: saveKey, disabled: !keyDraft.trim(), style: { fontSize: 12, fontWeight: 700, color: BUTTON_FG, background: BUTTON_BG, border: "none", borderRadius: 7, padding: "6px 12px", cursor: "pointer" } }, "Save")
+              )
+        ),
+      h(
+        "div",
+        { ref: scrollRef, style: { flex: 1, overflowY: "auto", padding: 14, display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 10, alignContent: "start" } },
+        messages.length === 0 &&
+          h(
+            "div",
+            { style: { fontSize: 13, color: "#3a3f47", lineHeight: 1.5 } },
+            "Ask about premiums, BOP vs workers comp, renewals, payment status or claims for any location."
+          ),
+        messages.map((m, i) => h(ChatBubble, { key: i, m }))
+      ),
+      h(
+        "div",
+        { style: { padding: "8px 10px 0", display: "flex", gap: 6, overflowX: "auto", flexShrink: 0 } },
+        SUGGESTIONS.map((s) =>
+          h("button", { key: s, onClick: () => send(s), disabled: busy, style: { flexShrink: 0, fontSize: 11.5, color: "#12203a", background: "#eef1f6", border: "1px solid #dfe3ea", borderRadius: 999, padding: "5px 10px", cursor: busy ? "default" : "pointer", whiteSpace: "nowrap" } }, s)
+        )
+      ),
+      h(
+        "form",
+        {
+          onSubmit: (e) => {
+            e.preventDefault();
+            send();
+          },
+          style: { display: "flex", gap: 8, padding: 10, borderTop: "1px solid #eceef1", marginTop: 8 }
+        },
+        h("input", {
+          value: input,
+          onChange: (e) => setInput(e.target.value),
+          placeholder: busy ? "Waiting for Claude…" : "Ask a question…",
+          "aria-label": "Ask a question",
+          style: { flex: 1, minWidth: 0, padding: "9px 12px", borderRadius: 9, border: "1px solid #d7dae0", fontSize: 13, fontFamily: "inherit" }
+        }),
+        h("button", { type: "submit", disabled: busy || !input.trim(), style: { fontSize: 13, fontWeight: 700, color: "#fff", background: busy || !input.trim() ? "#9aa3b5" : "#12203a", border: "none", borderRadius: 9, padding: "0 16px", cursor: "pointer" } }, "Send")
+      )
+    );
+  }
+  // ---------- Dashboard (dark "huddle" style) ----------
+  const SERIES = { bop: "#3987e5", wc: "#199e70" };
+  const BOP_POLICY_COUNT = LOCATIONS.reduce((n, l) => n + l.policies.filter((p) => !isWC(p)).length, 0);
+  const WC_POLICY_COUNT = LOCATIONS.reduce((n, l) => n + l.policies.filter(isWC).length, 0);
+  const pct = (part, whole) => (whole ? Math.round((part / whole) * 100) : 0);
+  const todayLabel = () => (/* @__PURE__ */ new Date()).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+
+  function StatTile({ label, value, sub, accent, children, className }) {
+    return h(
+      "div",
+      { className: "zd-card" + (className ? " " + className : ""), style: { padding: "14px 16px", borderLeft: accent ? `3px solid ${accent}` : void 0, minWidth: 0 } },
+      h("div", { className: "zd-label" }, label),
+      value !== void 0 && h("div", { className: "zd-value" }, value),
+      children,
+      sub && h("div", { className: "zd-sub" }, sub)
+    );
+  }
+  function Swatch({ color }) {
+    return h("span", { "aria-hidden": true, style: { display: "inline-block", width: 9, height: 9, borderRadius: 2, background: color, flexShrink: 0 } });
+  }
+  function SplitTile() {
+    const t = PREMIUM_TOTALS;
+    const row = (color, name, amt) =>
+      h(
+        "div",
+        { style: { display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, fontWeight: 800, marginTop: 6 } },
+        h(Swatch, { color }),
+        h("span", { style: { flex: 1 } }, name),
+        h("span", { style: { fontVariantNumeric: "tabular-nums" } }, `${pct(amt, t.total)}% · ${money(amt)}`)
+      );
+    return h(
+      StatTile,
+      { label: "BOP vs Workers comp", className: "zd-split" },
+      h(
+        "div",
+        {
+          role: "img",
+          "aria-label": `BOP ${pct(t.bop, t.total)} percent, ${money(t.bop)}; workers comp ${pct(t.wc, t.total)} percent, ${money(t.wc)}`,
+          style: { display: "flex", gap: 2, height: 10, marginTop: 12, borderRadius: 4, overflow: "hidden" }
+        },
+        h("div", { title: `BOP ${money(t.bop)}`, style: { width: `${(t.bop / t.total) * 100}%`, background: SERIES.bop } }),
+        h("div", { title: `Workers comp ${money(t.wc)}`, style: { width: `${(t.wc / t.total) * 100}%`, background: SERIES.wc } })
+      ),
+      row(SERIES.bop, "BOP", t.bop),
+      row(SERIES.wc, "Workers comp", t.wc)
+    );
+  }
+
+  function Panel({ title, sub, right, children, style }) {
+    return h(
+      "section",
+      { className: "zd-card", style: { padding: "16px 18px", minWidth: 0, ...style } },
+      h(
+        "div",
+        { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap", marginBottom: 10 } },
+        h("h2", { className: "zd-h2" }, title, sub && h("span", { className: "zd-h2-sub" }, " ", sub)),
+        right
+      ),
+      children
+    );
+  }
+
+  function PremiumByLocationChart({ onOpen }) {
+    const max = Math.max(...PREMIUM_ROWS.map((r) => r.total));
+    const rows = [...PREMIUM_ROWS].sort((a, b) => b.total - a.total);
+    return h(
+      Panel,
+      { title: "Premium by location", sub: "annual" },
+      h(
+        "div",
+        { style: { display: "flex", gap: 14, fontSize: 12, fontWeight: 800, marginBottom: 12 } },
+        h("span", { style: { display: "flex", alignItems: "center", gap: 6 } }, h(Swatch, { color: SERIES.bop }), "BOP (GL / Property)"),
+        h("span", { style: { display: "flex", alignItems: "center", gap: 6 } }, h(Swatch, { color: SERIES.wc }), "Workers comp")
+      ),
+      h(
+        "div",
+        { style: { display: "grid", gap: 4 } },
+        rows.map((r) =>
+          h(
+            "button",
+            {
+              key: r.id,
+              className: "zd-row zd-barrow",
+              onClick: () => onOpen(r.id),
+              "aria-label": `${r.name}: total ${money(r.total)}, BOP ${money(r.bop)}, workers comp ${money(r.wc)}. Open location.`
+            },
+            h(
+              "div",
+              { style: { minWidth: 0 } },
+              h("div", { style: { fontSize: 13.5, fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, r.name),
+              h("div", { className: "zd-sub", style: { marginTop: 1 } }, `BOP ${moneyOrDash(r.bop)} · WC ${moneyOrDash(r.wc)}`)
+            ),
+            h(
+              "div",
+              { style: { display: "flex", alignItems: "center", gap: 8, minWidth: 0 } },
+              h(
+                "div",
+                { style: { flex: 1, display: "flex", gap: 2, height: 14, background: "rgba(255,255,255,0.08)", borderRadius: 4 } },
+                r.bop > 0 && h("div", { title: `BOP ${money(r.bop)}`, style: { width: `${(r.bop / max) * 100}%`, background: SERIES.bop, borderRadius: r.wc > 0 ? "0" : "0 4px 4px 0" } }),
+                r.wc > 0 && h("div", { title: `Workers comp ${money(r.wc)}`, style: { width: `${(r.wc / max) * 100}%`, background: SERIES.wc, borderRadius: "0 4px 4px 0" } })
+              ),
+              h("div", { style: { fontSize: 13, fontWeight: 900, width: 92, textAlign: "right", fontVariantNumeric: "tabular-nums" } }, money(r.total))
+            )
+          )
+        )
+      )
+    );
+  }
+
+  function RenewalsPanel({ onOpen }) {
+    const list = SORTED_LOCATIONS.flatMap((l) => l.policies.map((p) => ({ l, p, d: daysUntil(p.expiration) })))
+      .filter((x) => x.d !== null && x.d >= 0)
+      .sort((a, b) => a.d - b.d)
+      .slice(0, 7);
+    return h(
+      Panel,
+      { title: "Renewals coming up", sub: `next ${list.length}` },
+      h(
+        "div",
+        { style: { display: "grid", gap: 2 } },
+        list.map(({ l, p, d }) =>
+          h(
+            "button",
+            { key: p.id, className: "zd-row", onClick: () => onOpen(l.id), style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "8px 8px" } },
+            h(
+              "div",
+              { style: { minWidth: 0, textAlign: "left" } },
+              h("div", { style: { fontSize: 13.5, fontWeight: 800 } }, l.name),
+              h(
+                "div",
+                { className: "zd-sub", style: { marginTop: 1, display: "flex", alignItems: "center", gap: 6 } },
+                h(Swatch, { color: isWC(p) ? SERIES.wc : SERIES.bop }),
+                `${isWC(p) ? "Workers comp" : kindLabel(p.kind)} · ${p.expiration}`
+              )
+            ),
+            h(
+              "div",
+              { style: { textAlign: "right", flexShrink: 0 } },
+              h("div", { style: { fontSize: 18, fontWeight: 900, color: d <= 45 ? "#fab219" : "#fff", fontVariantNumeric: "tabular-nums" } }, d, h("span", { style: { fontSize: 11, fontWeight: 800 } }, " days")),
+              d <= 45 && h("div", { style: { fontSize: 10.5, fontWeight: 800, color: "#fab219" } }, "⚠ Soon")
+            )
+          )
+        )
+      )
+    );
+  }
+
+  function TablesPanel({ onOpen, overrides, alerts }) {
+    const [tab, setTab] = useState("split");
+    const claimsTotal = Object.values(WC_LOSS_RUNS.claims).reduce((a, b) => a + b, 0);
+    const tabs = [
+      ["split", "Premium split"],
+      ["policies", `Policies · ${BOP_POLICY_COUNT + WC_POLICY_COUNT}`],
+      ["alerts", `Alerts · ${alerts.length}`],
+      ["claims", `WC claims · ${claimsTotal}`]
+    ];
+    const head = (cols) => h("thead", null, h("tr", null, cols.map((c, i) => h("th", { key: i, className: "zd-th", style: { textAlign: i === 0 || c.left ? "left" : "right" } }, c.label || c))));
+    const td = (v, opts = {}) => h("td", { className: "zd-td", style: { textAlign: opts.left ? "left" : "right", fontWeight: opts.bold ? 900 : 600, whiteSpace: opts.wrap ? "normal" : "nowrap" } }, v);
+    let body;
+    if (tab === "split") {
+      body = h(
+        "table",
+        { className: "zd-table" },
+        head(["Location", "BOP", "Workers comp", "Total"]),
+        h(
+          "tbody",
+          null,
+          PREMIUM_ROWS.map((r) => h("tr", { key: r.id, className: "zd-trow", onClick: () => onOpen(r.id) }, td(r.name, { left: true, bold: true }), td(moneyOrDash(r.bop)), td(moneyOrDash(r.wc)), td(money(r.total), { bold: true }))),
+          h("tr", { className: "zd-total" }, td("All locations", { left: true, bold: true }), td(money(PREMIUM_TOTALS.bop), { bold: true }), td(money(PREMIUM_TOTALS.wc), { bold: true }), td(money(PREMIUM_TOTALS.total), { bold: true }))
+        )
+      );
+    } else if (tab === "policies") {
+      body = h(
+        "table",
+        { className: "zd-table" },
+        head(["Location", { label: "Line · Carrier", left: true }, { label: "Policy #", left: true }, "Premium"]),
+        h(
+          "tbody",
+          null,
+          SORTED_LOCATIONS.flatMap((l) =>
+            l.policies.map((p) =>
+              h(
+                "tr",
+                { key: p.id, className: "zd-trow", onClick: () => onOpen(l.id) },
+                td(l.name, { left: true, bold: true }),
+                td(h("span", null, isWC(p) ? "Workers comp" : kindLabel(p.kind), " · ", h("span", { className: "zd-chip", style: { borderColor: isWC(p) ? SERIES.wc : SERIES.bop } }, isWC(p) ? "Farmers" : /century/i.test(p.carrier) ? "Century Surety" : "Penn-Star")), { left: true }),
+                td(p.policyNumber, { left: true }),
+                td(money(p.annualPremium), { bold: true })
+              )
+            )
+          )
+        )
+      );
+    } else if (tab === "alerts") {
+      body = alerts.length
+        ? h(
+            "div",
+            { style: { display: "grid", gap: 8 } },
+            alerts.map((a) =>
+              h("button", { key: a.id, className: "zd-row", onClick: () => onOpen(a.locationId), style: { display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 10px", textAlign: "left", fontSize: 13, fontWeight: 700, lineHeight: 1.45 } }, h(AlertTriangle, { size: 15, color: "#ff8f8f", style: { marginTop: 2 } }), a.text)
+            )
+          )
+        : h("div", { className: "zd-sub" }, "Nothing needs attention right now.");
+    } else {
+      body = h(
+        "div",
+        null,
+        h("div", { className: "zd-sub", style: { marginBottom: 8 } }, `Farmers loss runs valued ${WC_LOSS_RUNS.valuationDate} · 01/01/2021 – 11/19/2026. $0 paid, $0 reserved, $0 incurred on every policy.`),
+        h(
+          "table",
+          { className: "zd-table" },
+          head(["Location", { label: "WC policy #", left: true }, "Claims"]),
+          h(
+            "tbody",
+            null,
+            SORTED_LOCATIONS.flatMap((l) => l.policies.filter(isWC).map((p) => h("tr", { key: p.id, className: "zd-trow", onClick: () => onOpen(l.id) }, td(l.name, { left: true, bold: true }), td(p.policyNumber, { left: true }), td(String(WC_LOSS_RUNS.claims[p.id] ?? "—"), { bold: true }))))
+          )
+        ),
+        h("button", { className: "zd-btn", onClick: downloadLossRuns, style: { marginTop: 12 } }, h(Download, { size: 13 }), " Download all loss runs (PDF)")
+      );
+    }
+    return h(
+      "section",
+      { className: "zd-card", style: { padding: "14px 16px", minWidth: 0 } },
+      h(
+        "div",
+        { role: "tablist", style: { display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 } },
+        tabs.map(([id, label]) => h("button", { key: id, role: "tab", "aria-selected": tab === id, className: "zd-tab" + (tab === id ? " is-active" : ""), onClick: () => setTab(id) }, label))
+      ),
+      h("div", { style: { overflowX: "auto" } }, body)
+    );
+  }
+
+  function DocButton({ onClick, label }) {
+    return h(
+      "button",
+      {
+        className: "zd-docbtn",
+        onClick: (e) => {
+          e.stopPropagation();
+          onClick();
+        }
+      },
+      h(Download, { size: 12 }),
+      " ",
+      label
+    );
+  }
+  function LocationTile({ location, overrides, onOpen }) {
+    const s = premiumSplit(location);
+    const next = location.policies.map((p) => ({ p, d: daysUntil(p.expiration) })).filter((x) => x.d !== null).sort((a, b) => a.d - b.d);
+    const upcoming = next.find((x) => x.d >= 0);
+    const expired = next.find((x) => x.d < 0);
+    const critical = location.alert || location.policies.some((p) => /PENDING|EXPIRED|ACTION/i.test(statusOf(p, overrides)));
+    const decPolicy = location.policies.find((p) => DEC_FILES[p.id]);
+    const binderPolicy = location.policies.find((p) => BINDER_FILES[p.id]);
+    const wcInfoPolicy = location.policies.find((p) => WC_INFO_FILES[p.id]);
+    const cois = location.policies.reduce((n, p) => n + (COI_FILES[p.id] || []).length, 0);
+    return h(
+      "div",
+      { className: "zd-card zd-loc" + (critical ? " is-critical" : "") },
+      h(
+        "button",
+        { onClick: onOpen, className: "zd-loc-main", "aria-label": `Open ${location.name} details` },
+        h(
+          "div",
+          { style: { display: "flex", justifyContent: "space-between", gap: 8 } },
+          h(
+            "div",
+            { style: { minWidth: 0 } },
+            h("div", { style: { fontSize: 16, fontWeight: 900 } }, location.name),
+            h("div", { className: "zd-sub", style: { marginTop: 2, display: "flex", alignItems: "center", gap: 4 } }, h(MapPin, { size: 11 }), location.address)
+          ),
+          critical && h("span", { title: "Needs attention", style: { color: "#ff8f8f", flexShrink: 0 } }, h(AlertTriangle, { size: 17 }))
+        ),
+        h("div", { className: "zd-value", style: { fontSize: 24, marginTop: 10 } }, money(s.total), h("span", { className: "zd-sub", style: { fontSize: 11.5, marginLeft: 6 } }, "/ yr")),
+        h(
+          "div",
+          { style: { display: "grid", gap: 4, marginTop: 8 } },
+          h("div", { style: { display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, fontWeight: 700 } }, h(Swatch, { color: SERIES.bop }), h("span", { style: { flex: 1 } }, "BOP (GL / Property)"), h("span", { style: { fontWeight: 900 } }, moneyOrDash(s.bop))),
+          h("div", { style: { display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, fontWeight: 700 } }, h(Swatch, { color: SERIES.wc }), h("span", { style: { flex: 1 } }, "Workers comp"), h("span", { style: { fontWeight: 900 } }, moneyOrDash(s.wc)))
+        ),
+        h(
+          "div",
+          { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10, paddingTop: 8, borderTop: "1px solid rgba(255,255,255,0.12)", fontSize: 12 } },
+          h("span", { className: "zd-sub", style: { margin: 0 } }, upcoming ? `Next renewal in ${upcoming.d} days` : "No upcoming renewal"),
+          expired ? h("span", { style: { color: "#ff8f8f", fontWeight: 800 } }, "⚠ Term expired") : h("span", { style: { fontWeight: 800, display: "flex", alignItems: "center", gap: 2 } }, "Details", h(ChevronRight, { size: 14 }))
+        )
+      ),
+      (decPolicy || binderPolicy || wcInfoPolicy || cois > 0) &&
+        h(
+          "div",
+          { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 } },
+          decPolicy && h(DocButton, { onClick: () => downloadDecFile(decPolicy.id), label: `${kindLabel(decPolicy.kind)} dec sheet` }),
+          binderPolicy && h(DocButton, { onClick: () => downloadBinderFile(binderPolicy.id), label: `${kindLabel(binderPolicy.kind)} binder` }),
+          wcInfoPolicy && h(DocButton, { onClick: () => downloadWcInfoFile(wcInfoPolicy.id), label: "WC info" }),
+          cois > 0 && h(DocButton, { onClick: onOpen, label: `${cois} COI${cois > 1 ? "s" : ""}` })
+        )
+    );
+  }
+
   function PolicyManager() {
     const [view, setView] = useState("dashboard");
     const [activeLocationId, setActiveLocationId] = useState(null);
     const [query, setQuery] = useState("");
-    const { overrides, save, clearOne, loaded } = useOverrides();
+    const [chatOpen, setChatOpen] = useState(false);
+    const { overrides, save, clearOne } = useOverrides();
     const { dismissed, dismiss } = useDismissed();
     const alerts = useMemo(() => {
       const list = [];
       LOCATIONS.forEach((loc) => {
         if (loc.alert) list.push({ id: `loc-${loc.id}`, locationId: loc.id, text: `${loc.name}: ${loc.alert}` });
         loc.policies.forEach((p) => {
-          if (p.expiration) {
-            const d = daysUntil(p.expiration);
-            if (d !== null && d < 0 && !p.critical) {
-              list.push({ id: `exp-${p.id}`, locationId: loc.id, text: `${loc.name} \u2014 ${p.kind} (${p.policyNumber}) expired ${Math.abs(d)} days ago.` });
-            }
+          const d = daysUntil(p.expiration);
+          if (d !== null && d < 0 && !p.critical) {
+            list.push({ id: `exp-${p.id}`, locationId: loc.id, text: `${loc.name} — ${p.kind} (${p.policyNumber}) expired ${Math.abs(d)} days ago.` });
           }
+          const s = statusOf(p, overrides);
+          if (/ACTION/i.test(s)) list.push({ id: `act-${p.id}`, locationId: loc.id, text: `${loc.name} — ${p.kind} (${p.policyNumber}): ${s}. ${(overrides[p.id] && overrides[p.id].notes) || p.notes}` });
         });
       });
       return list.filter((a) => !dismissed.includes(a.id));
-    }, [dismissed]);
+    }, [dismissed, overrides]);
     const filtered = useMemo(() => {
       const q = query.trim().toLowerCase();
-      const base = !q ? LOCATIONS : LOCATIONS.filter(
-        (loc) => loc.name.toLowerCase().includes(q) || loc.address.toLowerCase().includes(q) || loc.policies.some((p) => p.policyNumber.toLowerCase().includes(q) || q.replace(/[\s-]/g, "") && p.policyNumber.toLowerCase().replace(/[\s-]/g, "").includes(q.replace(/[\s-]/g, "")) || p.carrier.toLowerCase().includes(q))
+      const qn = q.replace(/[\s-]/g, "");
+      if (!q) return SORTED_LOCATIONS;
+      return SORTED_LOCATIONS.filter(
+        (loc) => loc.name.toLowerCase().includes(q) || loc.address.toLowerCase().includes(q) || loc.policies.some((p) => p.policyNumber.toLowerCase().includes(q) || (qn && p.policyNumber.toLowerCase().replace(/[\s-]/g, "").includes(qn)) || p.carrier.toLowerCase().includes(q))
       );
-      return [...base].sort((a, b) => naturalCompare(a.name, b.name));
     }, [query]);
-    const policyCount = LOCATIONS.reduce((n, loc) => n + loc.policies.length, 0);
-    const wcPolicies = LOCATIONS.flatMap((loc) => loc.policies.filter((p) => /workers/i.test(p.kind)));
-    const wcClaims = wcPolicies.reduce((n, p) => n + (WC_LOSS_RUNS.claims[p.id] || 0), 0);
-    const portfolioTotal = LOCATIONS.reduce((sum, loc) => sum + loc.policies.reduce((s, p) => s + (p.annualPremium || 0), 0), 0);
-    const upcomingRenewals = LOCATIONS.flatMap((loc) => loc.policies.map((p) => ({ ...p, locationName: loc.name, days: daysUntil(p.expiration) }))).filter((p) => p.days !== null && p.days >= 0).sort((a, b) => a.days - b.days).slice(0, 5);
+    const open = (id) => {
+      setActiveLocationId(id);
+      setView("location");
+      window.scrollTo(0, 0);
+    };
     const activeLocation = LOCATIONS.find((l) => l.id === activeLocationId);
-    return /* @__PURE__ */ React.createElement("div", { style: { fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", background: "#f4f5f7", minHeight: "100%", color: "#1c2027" } }, /* @__PURE__ */ React.createElement("div", { style: { background: "#12203a", color: "#fff", padding: "20px 22px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, letterSpacing: "0.1em", opacity: 0.6, textTransform: "uppercase" } }, "Policy Management"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 20, fontWeight: 800, marginTop: 2 } }, AGENCY.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, opacity: 0.65, marginTop: 3 } }, "Agent ", AGENCY.agentId, " \xB7 ", AGENCY.producers.join(" \xB7 "), " \xB7 Report date ", AGENCY.reportDate)), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement("button", { onClick: downloadLossRuns, title: `Download all ${wcPolicies.length} Farmers workers comp loss runs (valued ${WC_LOSS_RUNS.valuationDate}) as one PDF`, style: { display: "flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 700, color: BUTTON_FG, background: BUTTON_BG, border: "none", borderRadius: 8, padding: "9px 14px", cursor: "pointer", whiteSpace: "nowrap" } }, /* @__PURE__ */ React.createElement(Download, { size: 14 }), " Workers Comp Loss Runs"), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "right" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, letterSpacing: "0.06em", opacity: 0.55, textTransform: "uppercase" } }, "Locations"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 20, fontWeight: 800 } }, LOCATIONS.length)), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "right" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, letterSpacing: "0.06em", opacity: 0.55, textTransform: "uppercase" } }, "Policies"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 20, fontWeight: 800 } }, policyCount)), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "right" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, letterSpacing: "0.06em", opacity: 0.55, textTransform: "uppercase" } }, "WC claims"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 20, fontWeight: 800 } }, wcClaims)), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "right" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, letterSpacing: "0.06em", opacity: 0.55, textTransform: "uppercase" } }, "Portfolio premium"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 20, fontWeight: 800 } }, money(portfolioTotal)))))), /* @__PURE__ */ React.createElement("div", { style: { maxWidth: 1080, margin: "0 auto", padding: "20px 22px 60px" } }, view === "dashboard" && /* @__PURE__ */ React.createElement(React.Fragment, null, alerts.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginBottom: 20 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#a3271b", letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 } }, /* @__PURE__ */ React.createElement(AlertTriangle, { size: 14 }), " Critical actions required"), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gap: 8 } }, alerts.map((a) => /* @__PURE__ */ React.createElement("div", { key: a.id, style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, background: "#fdeceb", border: "1px solid #f6c9c5", borderRadius: 10, padding: "10px 13px" } }, /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        onClick: () => {
-          setActiveLocationId(a.locationId);
-          setView("location");
-        },
-        style: { background: "none", border: "none", textAlign: "left", fontSize: 12.5, color: "#7a2016", lineHeight: 1.45, cursor: "pointer", flex: 1 }
-      },
-      a.text
-    ), /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        onClick: () => dismiss(a.id),
-        title: "Dismiss",
-        style: { background: "none", border: "none", cursor: "pointer", color: "#a3271b", flexShrink: 0, padding: 4 }
-      },
-      /* @__PURE__ */ React.createElement(X, { size: 14 })
-    ))))), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "2fr 1fr", gap: 18, marginBottom: 22 } }, /* @__PURE__ */ React.createElement("div", { style: { background: "#fff", border: "1px solid #e6e8ec", borderRadius: 12, padding: "16px 18px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#12203a", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 } }, /* @__PURE__ */ React.createElement(TrendingUp, { size: 14 }), " Carrier totals"), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gap: 8 } }, CARRIER_TOTALS.map((c) => /* @__PURE__ */ React.createElement("div", { key: c.carrier, style: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #f1f2f4" } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, fontWeight: 600 } }, c.carrier), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: "#8a8f99" } }, "Producer: ", c.producer)), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, fontWeight: 800, color: "#12203a" } }, money(c.total)))))), /* @__PURE__ */ React.createElement("div", { style: { background: "#fff", border: "1px solid #e6e8ec", borderRadius: 12, padding: "16px 18px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#12203a", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 } }, /* @__PURE__ */ React.createElement(Clock, { size: 14 }), " Next renewals"), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gap: 8 } }, upcomingRenewals.map((p) => /* @__PURE__ */ React.createElement("div", { key: p.id, style: { display: "flex", justifyContent: "space-between", fontSize: 12 } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#3a3f47" } }, p.locationName), /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 700, color: p.days <= 45 ? "#8a6300" : "#12203a" } }, p.days, "d")))))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap", gap: 10 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, fontWeight: 800, color: "#12203a" } }, "Locations (", filtered.length, ")"), /* @__PURE__ */ React.createElement("div", { style: { position: "relative" } }, /* @__PURE__ */ React.createElement(Search, { size: 14, color: "#9296a0", style: { position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" } }), /* @__PURE__ */ React.createElement(
-      "input",
-      {
-        value: query,
-        onChange: (e) => setQuery(e.target.value),
-        placeholder: "Search location, policy #, carrier\u2026",
-        style: { padding: "8px 12px 8px 30px", borderRadius: 9, border: "1px solid #d7dae0", fontSize: 12.5, width: 260, fontFamily: "inherit" }
-      }
-    ))), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 14 } }, filtered.map((loc) => /* @__PURE__ */ React.createElement(
-      LocationCard,
-      {
-        key: loc.id,
-        location: loc,
-        overrides,
-        onOpen: () => {
-          setActiveLocationId(loc.id);
-          setView("location");
-        }
-      }
-    )))), view === "location" && activeLocation && /* @__PURE__ */ React.createElement(
-      LocationDetail,
-      {
-        location: activeLocation,
-        onBack: () => setView("dashboard"),
-        overrides,
-        onSave: { save, clearOne }
-      }
-    )));
+    const nextRenewal = SORTED_LOCATIONS.flatMap((l) => l.policies.map((p) => ({ l, p, d: daysUntil(p.expiration) }))).filter((x) => x.d !== null && x.d >= 0).sort((a, b) => a.d - b.d)[0];
+    const wcClaims = Object.values(WC_LOSS_RUNS.claims).reduce((a, b) => a + b, 0);
+
+    return h(
+      "div",
+      { className: "zd zd-bg" },
+      h(
+        "div",
+        { className: "zd-wrap" },
+        h(
+          "header",
+          { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 14, marginBottom: 18 } },
+          h(
+            "div",
+            null,
+            h("div", { className: "zd-eyebrow" }, "Portfolio · ", AGENCY.name),
+            h("h1", { className: "zd-h1" }, "Zia's Insurance Portfolio"),
+            h("div", { className: "zd-subtitle" }, todayLabel(), ` · ${LOCATIONS.length} locations · ${BOP_POLICY_COUNT + WC_POLICY_COUNT} policies`),
+            h("div", { className: "zd-sub", style: { marginTop: 4 } }, "Agent ", AGENCY.agentId, " · ", AGENCY.producers.join(" · "), ` · Policy data as of ${AGENCY.reportDate} · WC loss runs valued ${WC_LOSS_RUNS.valuationDate}`)
+          ),
+          h(
+            "div",
+            { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
+            view === "location" && h("button", { className: "zd-btn", onClick: () => setView("dashboard") }, h(ChevronLeft, { size: 14 }), " Dashboard"),
+            h("button", { className: "zd-btn", onClick: downloadLossRuns, title: `Download all ${WC_POLICY_COUNT} Farmers workers comp loss runs (valued ${WC_LOSS_RUNS.valuationDate}) as one PDF` }, h(Download, { size: 14 }), " Workers Comp Loss Runs"),
+            h("button", { className: "zd-btn zd-btn-solid", onClick: () => setChatOpen(true) }, h(Info, { size: 14 }), " Ask the assistant")
+          )
+        ),
+        view === "dashboard" &&
+          h(
+            React.Fragment,
+            null,
+            h(
+              "div",
+              { className: "zd-kpis" },
+              h(StatTile, { label: "Total annual premium", value: money(PREMIUM_TOTALS.total), sub: `${LOCATIONS.length} locations · ${BOP_POLICY_COUNT + WC_POLICY_COUNT} policies` }),
+              h(SplitTile),
+              h(StatTile, { label: "BOP premium · USG", value: money(PREMIUM_TOTALS.bop), sub: `${BOP_POLICY_COUNT} policies · Penn-Star / Century Surety · Joe Lopez`, accent: SERIES.bop }),
+              h(StatTile, { label: "Workers comp · Farmers", value: money(PREMIUM_TOTALS.wc), sub: `${WC_POLICY_COUNT} policies · Mid-Century · Ximena Cruz`, accent: SERIES.wc }),
+              h(StatTile, { label: "Workers comp claims", value: String(wcClaims), sub: `$0 incurred · loss runs valued ${WC_LOSS_RUNS.valuationDate}` }),
+              nextRenewal && h(StatTile, { label: "Next renewal", value: `${nextRenewal.d} days`, sub: `${nextRenewal.l.name} · ${isWC(nextRenewal.p) ? "Workers comp" : kindLabel(nextRenewal.p.kind)} · ${nextRenewal.p.expiration}` })
+            ),
+            alerts.length > 0 &&
+              h(
+                "div",
+                { style: { display: "grid", gap: 8, marginBottom: 16 } },
+                alerts.map((a) =>
+                  h(
+                    "div",
+                    { key: a.id, className: "zd-alert" },
+                    h(AlertTriangle, { size: 15, color: "#ffb4ae", style: { marginTop: 2 } }),
+                    h("button", { onClick: () => open(a.locationId), style: { flex: 1, background: "none", border: "none", color: "inherit", textAlign: "left", font: "inherit", cursor: "pointer", padding: 0 } }, a.text),
+                    h("button", { onClick: () => dismiss(a.id), title: "Dismiss", "aria-label": "Dismiss alert", style: { background: "none", border: "none", color: "#ffb4ae", cursor: "pointer", padding: 2 } }, h(X, { size: 14 }))
+                  )
+                )
+              ),
+            h(
+              "div",
+              { className: "zd-panels" },
+              h(PremiumByLocationChart, { onOpen: open }),
+              h(RenewalsPanel, { onOpen: open }),
+              h(TablesPanel, { onOpen: open, overrides, alerts })
+            ),
+            h(
+              "div",
+              { style: { display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, margin: "26px 0 12px" } },
+              h("h2", { className: "zd-h2", style: { fontSize: 22 } }, "Locations ", h("span", { className: "zd-h2-sub" }, `${filtered.length} · click a location for policies, documents and COIs`)),
+              h(
+                "div",
+                { style: { position: "relative", width: "min(300px, 100%)" } },
+                h(Search, { size: 14, color: "#aebbe0", style: { position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)" } }),
+                h("input", { value: query, onChange: (e) => setQuery(e.target.value), placeholder: "Search location, policy #, carrier…", "aria-label": "Search locations", className: "zd-input" })
+              )
+            ),
+            h(
+              "div",
+              { className: "zd-locs" },
+              filtered.map((loc) => h(LocationTile, { key: loc.id, location: loc, overrides, onOpen: () => open(loc.id) }))
+            ),
+            filtered.length === 0 && h("div", { className: "zd-sub" }, "No locations match that search.")
+          ),
+        view === "location" &&
+          activeLocation &&
+          h(
+            "div",
+            { className: "zd-detail" },
+            h(LocationDetail, { location: activeLocation, onBack: () => setView("dashboard"), overrides, onSave: { save, clearOne } })
+          )
+      ),
+      h(PortfolioChat, { overrides, open: chatOpen, setOpen: setChatOpen })
+    );
   }
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(React.createElement(PolicyManager));
